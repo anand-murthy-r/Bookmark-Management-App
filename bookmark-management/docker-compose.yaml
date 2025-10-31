@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra
+    ports:
+      - "9042:9042"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "DESCRIBE KEYSPACES"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+
+  backend:
+    build: .
+    container_name: bookmark-management
+    ports:
+      - "3000:3000"
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  cassandra_data:
