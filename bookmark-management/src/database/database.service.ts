@@ -21,9 +21,10 @@ export class CassandraService implements OnModuleInit {
             keyspace: this.config.get('CASSANDRA_BOOKMARK_KEYSPACE') || 'bookmarks',
         });
     }
+    
     async onModuleInit() {
-        await this.usersClient.connect();
-        await this.bookmarksClient.connect();
+        await this.usersClient.connect();         // connect to User Keyspace
+        await this.bookmarksClient.connect();     // connect to Bookmark Keyspace
         console.log("Cassandra connection established!");
     }
 

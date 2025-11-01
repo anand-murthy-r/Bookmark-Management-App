@@ -1,9 +1,7 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
-// import { PrismaService } from "../prisma/prisma.service";
 import { AuthDtoSignUp, AuthDtoSignIn } from "./dto";
 import * as bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
-// import { Prisma } from "@prisma/client";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { CassandraService } from "src/database/database.service";
@@ -65,8 +63,8 @@ export class AuthService {
     
     async signin(dto: AuthDtoSignIn) {
         // find user by email
-        const result = await this.usersClient.execute(`
-            SELECT user_id FROM email_lookup WHERE email = ?`,
+        const result = await this.usersClient.execute(
+            `SELECT user_id FROM email_lookup WHERE email = ?`,
             [dto.email],
             { prepare: true }
         );
