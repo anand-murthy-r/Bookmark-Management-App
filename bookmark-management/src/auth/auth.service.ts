@@ -66,15 +66,21 @@ export class AuthService {
     async signin(dto: AuthDtoSignIn) {
         // find user by email
         const result = await this.usersClient.execute(`
-            SELECT * FROM users WHERE email = ?`,
+            SELECT user_id FROM email_lookup WHERE email = ?`,
             [dto.email],
             { prepare: true }
         );
         // if user does not exist throw exception
         if(!result.rowLength) throw new ForbiddenException("User not found");
-        const user = result.first();
+        const user_id = result.first().user_id;
+        const user = await this.usersClient.execute(
+            `SELECT * FROM users WHERE user_id = ?`,
+            [user_id],
+            {prepare: true}
+        );
+        const user_password = user.first().password;
         // compare password
-        const isMatch = await bcrypt.compare(dto.password, user.password);
+        const isMatch = await bcrypt.compare(dto.password, user_password);
         // if password incorrect throw exception
         if (!isMatch) throw new ForbiddenException("Credentials incorrect");
         // if all ok send back user
