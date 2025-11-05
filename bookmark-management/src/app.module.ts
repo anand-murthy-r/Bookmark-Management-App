@@ -3,11 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
+import { BookmarkModule } from './bookmark/bookmark.module';
 
 @Module({
   imports: [
     DatabaseModule,
-    AuthModule
+    AuthModule,
+    BookmarkModule
   ],
   controllers: [AppController],
   providers: [AppService],
